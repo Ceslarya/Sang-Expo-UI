@@ -2,19 +2,19 @@ import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import ForumTab from './profileTabs/ForumTab';
-import ProfileTab from './profileTabs/ProfileTab';
-import SettingTab from './profileTabs/SettingTab';
+// Import từ thư mục tabs mới
+import HomeTab from './tabs/HomeTab';
+import ProfileTab from './tabs/ProfileTab';
+import SettingTab from './tabs/SettingTab';
 
 export default function ProfileScreen({ name, email, profileData, onLogout }) {
-  const [tab, setTab] = useState('profile');
+  const [tab, setTab] = useState('home');
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       
-      {/* Vùng nội dung chính */}
       <View style={styles.contentArea}>
-        {tab === 'forum' && <ForumTab />}
+        {tab === 'home' && <HomeTab />}
         {tab === 'profile' && (
           <ProfileTab
             name={name}
@@ -25,27 +25,20 @@ export default function ProfileScreen({ name, email, profileData, onLogout }) {
         {tab === 'setting' && <SettingTab onLogout={onLogout} />}
       </View>
 
-      {/* Thanh điều hướng Bottom Bar - Đã được làm cao lên */}
       <View style={styles.tabBar}>
-        <TouchableOpacity 
-          style={[styles.tabItem, tab === 'forum' && styles.tabItemActive]} 
-          onPress={() => setTab('forum')}
-        >
-          <Text style={[styles.tabText, tab === 'forum' && styles.tabTextActive]}>Diễn đàn</Text>
+        <TouchableOpacity style={styles.tabItem} onPress={() => setTab('home')}>
+          <View style={[styles.indicator, tab === 'home' && styles.indicatorActive]} />
+          <Text style={[styles.tabText, tab === 'home' && styles.tabTextActive]}>Trang chủ</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.tabItem, tab === 'profile' && styles.tabItemActive]} 
-          onPress={() => setTab('profile')}
-        >
-          <Text style={[styles.tabText, tab === 'profile' && styles.tabTextActive]}>Hồ sơ</Text>
+        <TouchableOpacity style={styles.tabItem} onPress={() => setTab('profile')}>
+          <View style={[styles.indicator, tab === 'profile' && styles.indicatorActive]} />
+          <Text style={[styles.tabText, tab === 'profile' && styles.tabTextActive]}>Cá nhân</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={[styles.tabItem, tab === 'setting' && styles.tabItemActive]} 
-          onPress={() => setTab('setting')}
-        >
-          <Text style={[styles.tabText, tab === 'setting' && styles.tabTextActive]}>Cài đặt</Text>
+        <TouchableOpacity style={styles.tabItem} onPress={() => setTab('setting')}>
+          <View style={[styles.indicator, tab === 'setting' && styles.indicatorActive]} />
+          <Text style={[styles.tabText, tab === 'setting' && styles.tabTextActive]}>Cấu hình</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -53,35 +46,41 @@ export default function ProfileScreen({ name, email, profileData, onLogout }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F9FAFB' },
+  container: { flex: 1, backgroundColor: '#FFFFFF' },
   contentArea: { flex: 1 },
   tabBar: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 15, // Tăng khoảng cách trên dưới
-    paddingHorizontal: 20,
+    justifyContent: 'space-between',
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
-    borderColor: '#F3F4F6',
-    paddingBottom: 35, // Đẩy các nút lên cao, tránh thanh điều hướng của hệ thống
-    height: 90, // Set chiều cao cố định lớn hơn
+    borderColor: '#F1F5F9',
+    height: 85,
+    paddingBottom: 25,
+    paddingHorizontal: 15,
   },
   tabItem: {
-    paddingVertical: 12, // Tăng vùng bấm
-    paddingHorizontal: 25,
-    borderRadius: 20,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 10,
   },
-  tabItemActive: {
-    backgroundColor: '#EEF2FF',
+  indicator: {
+    height: 4,
+    width: 25,
+    borderRadius: 2,
+    backgroundColor: 'transparent',
+    marginBottom: 5,
+  },
+  indicatorActive: {
+    backgroundColor: '#10B981',
   },
   tabText: {
-    color: '#9CA3AF',
-    fontSize: 15,
+    color: '#94A3B8',
+    fontSize: 14,
     fontWeight: '600'
   },
   tabTextActive: {
-    color: '#6366F1',
-    fontWeight: 'bold'
+    color: '#059669',
+    fontWeight: '800'
   }
 });

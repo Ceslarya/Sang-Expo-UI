@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import ChangePassword from '../screens/ChangePassword';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -11,10 +11,11 @@ export default function AppNavigator() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
 
+  // DỮ LIỆU MẶC ĐỊNH ĐÃ ĐƯỢC THAY ĐỔI HOÀN TOÀN
   const profileData = {
-    address: '123 Developer Avenue, Tech District',
-    phone: '+1 234 567 8900',
-    description: 'Passionate developer building mobile apps.'
+    address: 'Khu công nghệ cao, Quận 9, TP.HCM',
+    phone: '0901 234 567',
+    description: 'Xin chào! Mình là một lập trình viên yêu thích thiết kế UI/UX và phát triển ứng dụng di động.'
   };
 
   return (
@@ -53,7 +54,7 @@ export default function AppNavigator() {
       )}
 
       {currentScreen === 'forgot' && (
-        <ForgotPasswordScreen
+        <ChangePassword
           onBack={() => setCurrentScreen('login')}
         />
       )}
