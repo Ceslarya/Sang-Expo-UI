@@ -3,7 +3,7 @@ import {
   StyleSheet, Text, TextInput, TouchableOpacity, View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getAccount } from '../utils/stogare';
+import { loginUser } from '../utils/stogare';
 
 export default function LoginScreen({
   email, password, setEmail, setPassword,
@@ -14,15 +14,14 @@ export default function LoginScreen({
       Alert.alert('Thông báo', 'Vui lòng điền đủ thông tin đăng nhập.');
       return;
     }
-    const account = await getAccount();
-    if (!account) {
-      Alert.alert('Lỗi', 'Chưa có tài khoản nào được đăng ký trên máy này!');
-      return;
-    }
-    if (email.toLowerCase() === account.email.toLowerCase() && password === account.password) {
+    
+    // Gọi thẳng vào DB để tìm user
+    const account = await loginUser(email, password);
+    
+    if (account) {
       onLogin(); 
     } else {
-      Alert.alert('Lỗi', 'Email hoặc mật khẩu không chính xác!');
+      Alert.alert('Lỗi', 'Email hoặc mật khẩu không chính xác, hoặc chưa đăng ký!');
     }
   };
 

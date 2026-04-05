@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { getPosts, savePosts } from '../../utils/stogare';
+import { addComment, createPost, getPosts, toggleLikePost } from '../../utils/stogare';
 
 export default function HomeTab() {
   const [posts, setPosts] = useState([]);
@@ -14,44 +14,33 @@ export default function HomeTab() {
 
   const loadPosts = async () => {
     const data = await getPosts();
-    const formattedData = data.map(p => ({
-      ...p, likes: p.likes || 0, isLiked: p.isLiked || false, comments: p.comments || []
-    }));
-    setPosts(formattedData);
+    setPosts(data);
   };
 
   const handlePost = async () => {
     if (!title || !content) return;
-    const newPost = { id: Date.now(), title, content, date: new Date().toLocaleDateString(), likes: 0, isLiked: false, comments: [] };
-    const updated = [newPost, ...posts];
-    setPosts(updated);
-    await savePosts(updated);
+    
+    await createPost(title, content, new Date().toLocaleDateString());
     setTitle('');
     setContent('');
+    loadPosts(); // Load lại data từ DB sau khi thêm
   };
 
   const handleToggleLike = async (postId) => {
-    const updated = posts.map(p => {
-      if (p.id === postId) {
-        const newIsLiked = !p.isLiked;
-        return { ...p, isLiked: newIsLiked, likes: newIsLiked ? p.likes + 1 : Math.max(0, p.likes - 1) };
-      }
-      return p;
-    });
-    setPosts(updated);
-    await savePosts(updated);
+    const post = posts.find(p => p.id === postId);
+    if(post) {
+      await toggleLikePost(postId, post.isLiked, post.likes);
+      loadPosts(); // Load lại để cập nhật UI tim
+    }
   };
 
   const handleSendComment = async (postId) => {
     const text = commentInputs[postId];
     if (!text || text.trim() === '') return;
-    const updated = posts.map(p => {
-      if (p.id === postId) return { ...p, comments: [...p.comments, text.trim()] };
-      return p;
-    });
-    setPosts(updated);
-    await savePosts(updated);
+    
+    await addComment(postId, text.trim());
     setCommentInputs({ ...commentInputs, [postId]: '' });
+    loadPosts(); // Load lại để hiển thị comment mới
   };
 
   return (
