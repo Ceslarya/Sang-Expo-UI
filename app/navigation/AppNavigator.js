@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ChangePassword from '../screens/ChangePassword';
+import ChangePassword from '../screens/ForgotPasswordScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import RegisterScreen from '../screens/RegisterScreen';

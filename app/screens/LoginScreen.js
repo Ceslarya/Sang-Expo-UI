@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Alert, KeyboardAvoidingView, Platform,
   StyleSheet, Text, TextInput, TouchableOpacity, View
@@ -5,65 +6,67 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { loginUser } from '../utils/stogare';
 
-export default function LoginScreen({
-  email, password, setEmail, setPassword,
-  onLogin, goRegister, goForgot
-}) {
+export default function LoginScreen({ onLogin, goRegister, goForgot }) {
+  // Khai báo state cục bộ tại đây để tránh văng app
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Thông báo', 'Vui lòng điền đủ thông tin đăng nhập.');
+      Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ email và mật khẩu.');
       return;
     }
-    
-    // Gọi thẳng vào DB để tìm user
+
     const account = await loginUser(email, password);
-    
+
     if (account) {
       onLogin(); 
     } else {
-      Alert.alert('Lỗi', 'Email hoặc mật khẩu không chính xác, hoặc chưa đăng ký!');
+      Alert.alert('Lỗi', 'Sai email hoặc mật khẩu, hoặc tài khoản chưa đăng ký!');
     }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-        <View style={styles.headerBox}>
-          <Text style={styles.appTitle}>SocialApp</Text>
-          <Text style={styles.subTitle}>Đăng nhập để kết nối</Text>
-        </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <View style={styles.card}>
+          <Text style={styles.title}>Chào mừng trở lại 👋</Text>
+          <Text style={styles.subtitle}>Đăng nhập để tiếp tục</Text>
 
-        <View style={styles.formBox}>
           <TextInput
-            style={styles.inputStyle}
-            placeholder="Nhập địa chỉ Email"
-            placeholderTextColor="#A1A1AA"
+            style={styles.input}
+            placeholder="Email của bạn"
+            placeholderTextColor="#9CA3AF"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
           />
+
           <TextInput
-            style={styles.inputStyle}
-            placeholder="Nhập Mật khẩu"
-            placeholderTextColor="#A1A1AA"
+            style={styles.input}
+            placeholder="Mật khẩu"
+            placeholderTextColor="#9CA3AF"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
           />
 
-          <TouchableOpacity onPress={goForgot} style={styles.rightAlign}>
-            <Text style={styles.textLink}>Quên mật khẩu?</Text>
+          <TouchableOpacity onPress={goForgot} style={styles.forgotWrapper}>
+            <Text style={styles.forgotText}>Quên mật khẩu?</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.btnAction} onPress={handleLogin}>
-            <Text style={styles.btnText}>ĐĂNG NHẬP</Text>
+          <TouchableOpacity style={styles.btnPrimary} onPress={handleLogin}>
+            <Text style={styles.btnPrimaryText}>ĐĂNG NHẬP</Text>
           </TouchableOpacity>
 
-          <View style={styles.footerRow}>
-            <Text style={styles.textGray}>Bạn chưa là thành viên? </Text>
+          <View style={styles.registerWrapper}>
+            <Text style={styles.textNormal}>Chưa có tài khoản? </Text>
             <TouchableOpacity onPress={goRegister}>
-              <Text style={styles.textLinkBold}>Đăng ký ngay</Text>
+              <Text style={styles.linkText}>Đăng ký ngay</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -73,18 +76,28 @@ export default function LoginScreen({
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#F0FDF4' },
-  container: { flex: 1, justifyContent: 'center', padding: 25 },
-  headerBox: { alignItems: 'center', marginBottom: 40 },
-  appTitle: { fontSize: 32, fontWeight: '900', color: '#047857', letterSpacing: 1 },
-  subTitle: { fontSize: 16, color: '#10B981', marginTop: 5 },
-  formBox: { backgroundColor: '#FFFFFF', padding: 25, borderRadius: 24, elevation: 2, shadowColor: '#047857', shadowOpacity: 0.1, shadowRadius: 15 },
-  inputStyle: { backgroundColor: '#F8FAFC', borderWidth: 1, borderColor: '#E2E8F0', padding: 16, borderRadius: 30, marginBottom: 16, fontSize: 15, color: '#0F172A' },
-  rightAlign: { alignSelf: 'flex-end', marginBottom: 20 },
-  textLink: { color: '#059669', fontSize: 14 },
-  btnAction: { backgroundColor: '#10B981', padding: 18, borderRadius: 30, alignItems: 'center' },
-  btnText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold', letterSpacing: 0.5 },
-  footerRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 25 },
-  textGray: { color: '#64748B', fontSize: 14 },
-  textLinkBold: { color: '#059669', fontSize: 14, fontWeight: 'bold' }
+  safeArea: { flex: 1, backgroundColor: '#F3F4F6' },
+  container: { flex: 1, justifyContent: 'center', paddingHorizontal: 20 },
+  card: {
+    backgroundColor: '#FFFFFF', padding: 25, borderRadius: 20,
+    shadowColor: '#000', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1, shadowRadius: 10, elevation: 5,
+  },
+  title: { fontSize: 26, fontWeight: 'bold', color: '#1F2937', marginBottom: 8, textAlign: 'center' },
+  subtitle: { fontSize: 15, color: '#6B7280', marginBottom: 30, textAlign: 'center' },
+  input: {
+    backgroundColor: '#F9FAFB', borderWidth: 1, borderColor: '#E5E7EB',
+    padding: 15, borderRadius: 12, marginBottom: 15, fontSize: 16, color: '#1F2937'
+  },
+  forgotWrapper: { alignSelf: 'flex-end', marginBottom: 25 },
+  forgotText: { color: '#6366F1', fontWeight: '600' },
+  btnPrimary: {
+    backgroundColor: '#6366F1', padding: 16, borderRadius: 12,
+    shadowColor: '#6366F1', shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3, shadowRadius: 8, elevation: 4,
+  },
+  btnPrimaryText: { color: '#FFFFFF', textAlign: 'center', fontSize: 16, fontWeight: 'bold' },
+  registerWrapper: { flexDirection: 'row', justifyContent: 'center', marginTop: 25 },
+  textNormal: { color: '#6B7280', fontSize: 15 },
+  linkText: { color: '#6366F1', fontSize: 15, fontWeight: 'bold' }
 });
