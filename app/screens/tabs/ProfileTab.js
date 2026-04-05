@@ -4,6 +4,7 @@ import { getProfile, saveProfile } from '../../utils/stogare';
 
 export default function ProfileTab({ name, email, profileData }) {
   const [profile, setProfile] = useState({
+    id: null,
     name: name || '', 
     email: email || '', 
     address: profileData?.address || '', 
@@ -18,7 +19,7 @@ export default function ProfileTab({ name, email, profileData }) {
   const loadProfile = async () => {
     try {
       const data = await getProfile();
-      if (data) setProfile({ ...profile, ...data });
+      if (data) setProfile(data);
     } catch (e) { console.error(e); }
   };
 
@@ -29,14 +30,12 @@ export default function ProfileTab({ name, email, profileData }) {
     } catch (e) { Alert.alert('Lỗi', 'Không thể lưu dữ liệu lúc này.'); }
   };
 
-  // Đổi avatar mặc định sang một mẫu khác
   const defaultAvatar = 'https://cdn-icons-png.flaticon.com/512/4140/4140048.png';
   const coverPhoto = 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=1000&auto=format&fit=crop';
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       
-      {/* VÙNG ẢNH BÌA & AVATAR (Layout Mới) */}
       <View style={styles.coverContainer}>
         <Image source={{ uri: coverPhoto }} style={styles.coverImage} />
         <View style={styles.avatarRow}>
@@ -48,10 +47,8 @@ export default function ProfileTab({ name, email, profileData }) {
         </View>
       </View>
 
-      {/* VÙNG CHỈNH SỬA THÔNG TIN */}
       <View style={styles.formWrapper}>
         
-        {/* SECTION: TÀI KHOẢN & HÌNH ẢNH */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionHeader}>Tài khoản & Hình ảnh</Text>
           
@@ -65,7 +62,6 @@ export default function ProfileTab({ name, email, profileData }) {
           <TextInput style={styles.inputUnderline} value={profile.occupation} placeholder="VD: Sinh viên, IT..." placeholderTextColor="#CBD5E1" onChangeText={t => setProfile({ ...profile, occupation: t })} />
         </View>
 
-        {/* SECTION: THÔNG TIN LIÊN HỆ */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionHeader}>Thông tin liên hệ</Text>
           
@@ -79,13 +75,11 @@ export default function ProfileTab({ name, email, profileData }) {
           <TextInput style={styles.inputUnderline} value={profile.address} placeholder="Nhập địa chỉ..." placeholderTextColor="#CBD5E1" onChangeText={t => setProfile({ ...profile, address: t })} />
         </View>
 
-        {/* SECTION: GIỚI THIỆU */}
         <View style={styles.sectionCard}>
           <Text style={styles.sectionHeader}>Giới thiệu bản thân</Text>
           <TextInput style={[styles.inputUnderline, styles.inputArea]} value={profile.description} multiline numberOfLines={3} placeholder="Vài dòng về bản thân bạn..." placeholderTextColor="#CBD5E1" onChangeText={t => setProfile({ ...profile, description: t })} />
         </View>
 
-        {/* NÚT LƯU FULL WIDTH */}
         <TouchableOpacity style={styles.btnSave} onPress={handleSave}>
           <Text style={styles.btnSaveText}>LƯU THÔNG TIN</Text>
         </TouchableOpacity>
@@ -96,11 +90,11 @@ export default function ProfileTab({ name, email, profileData }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F1F5F9' }, // Màu nền xám nhạt làm nổi bật card trắng
+  container: { flex: 1, backgroundColor: '#F1F5F9' },
   coverContainer: { marginBottom: 40 },
   coverImage: { width: '100%', height: 140, backgroundColor: '#94A3B8' },
   avatarRow: { flexDirection: 'row', alignItems: 'flex-end', paddingHorizontal: 20, marginTop: -40 },
-  avatarImage: { width: 90, height: 90, borderRadius: 15, borderWidth: 4, borderColor: '#F1F5F9', backgroundColor: '#FFFFFF' }, // Avatar vuông bo góc thay vì tròn
+  avatarImage: { width: 90, height: 90, borderRadius: 15, borderWidth: 4, borderColor: '#F1F5F9', backgroundColor: '#FFFFFF' },
   titleInfo: { marginLeft: 15, paddingBottom: 5, flex: 1 },
   displayName: { fontSize: 22, fontWeight: 'bold', color: '#0F172A' },
   displayJob: { fontSize: 14, color: '#64748B', marginTop: 2 },
